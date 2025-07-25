@@ -4,9 +4,10 @@ from config.settings import TradingConfig
 class TradeExecutor:
     """매매 실행 클래스"""
     
-    def __init__(self, upbit_client, portfolio_manager):
+    def __init__(self, upbit_client, portfolio_manager, target_coin=None):
         self.upbit = upbit_client
         self.portfolio = portfolio_manager
+        self.target_coin = target_coin or TradingConfig.TARGET_COIN
         self.min_confidence = TradingConfig.MIN_CONFIDENCE
         self.trade_ratios = TradingConfig.TRADE_RATIOS
         self.min_trade_amount = TradingConfig.MIN_TRADE_AMOUNT
@@ -56,7 +57,7 @@ class TradeExecutor:
             print(f"매수 실행: {buy_amount:,.0f}원 (보유현금의 {trade_ratio*100:.0f}%)")
             
             # 실제 매수 주문
-            result = self.upbit.buy_market_order(TradingConfig.TARGET_COIN, buy_amount)
+            result = self.upbit.buy_market_order(self.target_coin, buy_amount)
             
             if result:
                 print(f"매수 성공: {result}")
@@ -72,19 +73,20 @@ class TradeExecutor:
     def _execute_sell(self, investment_status, trade_ratio):
         """매도 실행"""
         try:
-            btc_balance = investment_status["btc_balance"]
-            btc_value = investment_status["btc_value"]
-            sell_amount = btc_balance * trade_ratio
+            coin_balance = investment_status["coin_balance"]
+            coin_value = investment_status["coin_value"]
+            sell_amount = coin_balance * trade_ratio
+            coin_name = investment_status["coin_currency"]
             
             # 매도 가능 여부 확인
             if not self.portfolio.can_sell(sell_amount):
-                print(f"매도 불가 - BTC잔고: {btc_balance:.8f}, 평가액: {btc_value:,.0f}원")
+                print(f"매도 불가 - {coin_name}잔고: {coin_balance:.8f}, 평가액: {coin_value:,.0f}원")
                 return False
             
-            print(f"매도 실행: {sell_amount:.8f} BTC (보유BTC의 {trade_ratio*100:.0f}%)")
+            print(f"매도 실행: {sell_amount:.8f} {coin_name} (보유{coin_name}의 {trade_ratio*100:.0f}%)")
             
             # 실제 매도 주문
-            result = self.upbit.sell_market_order(TradingConfig.TARGET_COIN, sell_amount)
+            result = self.upbit.sell_market_order(self.target_coin, sell_amount)
             
             if result:
                 print(f"매도 성공: {result}")
@@ -103,14 +105,14 @@ class TradeExecutor:
             trade_ratio = self.trade_ratios.get(risk_level, self.trade_ratios["high"])
             
             krw_balance = investment_status["krw_balance"]
-            btc_balance = investment_status["btc_balance"]
+            coin_balance = investment_status["coin_balance"]
             
             max_buy_amount = krw_balance * trade_ratio
-            max_sell_amount = btc_balance * trade_ratio
+            max_sell_amount = coin_balance * trade_ratio
             
             return {
                 "max_buy_krw": max_buy_amount,
-                "max_sell_btc": max_sell_amount,
+                "max_sell_coin": max_sell_amount,
                 "trade_ratio": trade_ratio
             }
             

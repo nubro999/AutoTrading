@@ -1,4 +1,4 @@
-# analysis/ai_analyzer.py
+
 import json
 from openai import OpenAI
 from config.settings import TradingConfig
@@ -47,7 +47,7 @@ class AIAnalyzer:
     "risk_level": "low" | "medium" | "high"
 }'''
     
-    def analyze(self, market_data, investment_status):
+    def analyze(self, market_data, investment_status, selected_coin_info=None):
         """AI를 통한 매매 분석"""
         if not self.client:
             print("OpenAI API 키가 없어 AI 분석을 건너뜁니다.")
@@ -57,8 +57,14 @@ class AIAnalyzer:
             # AI에게 제공할 데이터 구성
             analysis_data = {
                 "market_data": market_data,
-                "investment_status": investment_status
+                "investment_status": investment_status,
+                "selected_coin": selected_coin_info
             }
+            
+            # 뉴스 헤드라인 추출 및 정리
+            news_headlines = self._extract_news_headlines(market_data)
+            if news_headlines:
+                analysis_data["news_headlines"] = news_headlines
             
             response = self.client.chat.completions.create(
                 model="gpt-4-turbo",
@@ -84,6 +90,35 @@ class AIAnalyzer:
             print(f"AI 분석 오류: {e}")
             return None
     
+    def _extract_news_headlines(self, market_data):
+        """뉴스 데이터에서 헤드라인 추출"""
+        try:
+            news_analysis = market_data.get('news_analysis')
+            if not news_analysis or not news_analysis.get('news_items'):
+                return None
+            
+            headlines = []
+            for news_item in news_analysis['news_items'][:10]:  # 상위 10개만
+                headline_info = {
+                    "title": news_item.get('title', ''),
+                    "source": news_item.get('source', ''),
+                    "sentiment": news_item.get('sentiment', 'neutral'),
+                    "sentiment_score": news_item.get('sentiment_score', 0)
+                }
+                if headline_info["title"]:
+                    headlines.append(headline_info)
+            
+            return {
+                "headlines": headlines,
+                "overall_sentiment": news_analysis.get('weighted_sentiment', 0),
+                "market_signal": news_analysis.get('market_signal', {}),
+                "summary": f"{len(headlines)}개 뉴스 분석 - 긍정: {news_analysis.get('positive_count', 0)}개, 부정: {news_analysis.get('negative_count', 0)}개"
+            }
+            
+        except Exception as e:
+            print(f"뉴스 헤드라인 추출 오류: {e}")
+            return None
+    
     def _validate_response(self, response):
         """AI 응답 유효성 검사"""
         try:
@@ -107,20 +142,26 @@ class AIAnalyzer:
                 print(f"잘못된 리스크 레벨: {response['risk_level']}")
                 return None
             
+            # 선택적 필드 기본값 설정
+            if "news_impact" not in response:
+                response["news_impact"] = "none"
+            if "key_factors" not in response:
+                response["key_factors"] = []
+            
             return response
             
         except Exception as e:
             print(f"AI 응답 검증 오류: {e}")
             return None
     
-    def get_recommendation(self, market_data, investment_status):
+    def get_recommendation(self, market_data, investment_status, selected_coin_info=None):
         """매매 추천 조회 (AI 또는 백업 분석)"""
         # AI 분석 시도
-        ai_result = self.analyze(market_data, investment_status)
+        ai_result = self.analyze(market_data, investment_status, selected_coin_info)
         if ai_result:
             return ai_result
         
-        # AI 실패 시 백업 분석 사용
+        # AI 실패 시 백업 분석 사용  
         print("AI 분석 실패로 기본 분석을 사용합니다.")
         from analysis.technical_analyzer import TechnicalAnalyzer
         
