@@ -115,3 +115,4 @@ class FearGreedAnalyzer:
             return -0.02  # 매도 성향 증가
         
         return 0  # 중립
+    

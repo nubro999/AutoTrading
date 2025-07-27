@@ -1,79 +1,65 @@
-
 import json
-from openai import OpenAI
+from openai import OpenAI, APIError, RateLimitError
 from config.settings import TradingConfig
 
 class AIAnalyzer:
-    """AI 분석 클래스"""
+    """AI analysis class with improved error handling."""
     
     def __init__(self):
         self.client = OpenAI() if TradingConfig.OPENAI_API_KEY else None
         self.system_prompt = self._get_system_prompt()
     
     def _get_system_prompt(self):
-        """시스템 프롬프트 생성"""
-        return '''당신은 전문 비트코인 트레이더입니다. 제공된 데이터를 분석하여 매매 결정을 내리세요.
+        """Generates the system prompt for the AI."""
+        return '''You are a professional Bitcoin trader. Analyze the provided data to make a trading decision.
 
-분석할 데이터:
-1. daily_ohlcv: 30일 일봉 데이터 (OHLCV)
-2. hourly_ohlcv: 24시간 시간봉 데이터 (OHLCV) 
-3. current_price: 현재 비트코인 가격
-4. orderbook: 매수/매도 호가 정보
-5. investment_status: 현재 투자 상태 (보유 현금, BTC 수량, 평균 매수가 등)
-6. fear_greed_index: 공포탐욕지수 데이터 (current_value, trend, market_sentiment 등)
+Data to analyze:
+1. daily_ohlcv: 30-day daily data (OHLCV)
+2. hourly_ohlcv: 24-hour hourly data (OHLCV) 
+3. current_price: Current Bitcoin price
+4. orderbook: Bid/ask price information
+5. investment_status: Current investment status (cash, BTC quantity, average purchase price, etc.)
+6. fear_greed_index: Fear and Greed Index data (current_value, trend, market_sentiment, etc.)
 
-분석 요소:
-- 가격 트렌드 (단기/장기)
-- 이동평균선 패턴
-- RSI, MACD 등 기술적 지표
-- 거래량 분석
-- 지지/저항선 분석
-- 호가창 분석 (매수/매도 압력)
-- 현재 포지션 대비 리스크 관리
-- **공포탐욕지수 분석**: 
-  * 0-25: 극도의 공포 (강한 매수 신호)
-  * 26-45: 공포 (매수 고려)
-  * 46-55: 중립 (관망)
-  * 56-75: 탐욕 (매도 고려)  
-  * 76-100: 극도의 탐욕 (강한 매도 신호)
-  * 7일 평균과 현재값 비교
-  * 최근 트렌드 방향성
+Analysis elements:
+- Price trend (short/long term)
+- Moving average patterns
+- Technical indicators like RSI, MACD
+- Volume analysis
+- Support/resistance level analysis
+- Order book analysis (buy/sell pressure)
+- Risk management relative to the current position
+- **Fear and Greed Index Analysis**: 
+  * 0-25: Extreme Fear (strong buy signal)
+  * 26-45: Fear (consider buying)
+  * 46-55: Neutral (wait and see)
+  * 56-75: Greed (consider selling)  
+  * 76-100: Extreme Greed (strong sell signal)
+  * Compare 7-day average with the current value
+  * Recent trend direction
 
-응답은 반드시 JSON 형식으로 제공해주세요:
+Please provide the response in JSON format only:
 {
     "recommendation": "buy" | "sell" | "hold",
-    "confidence": 1-10 (확신도),
-    "justification": "1-2문장 설명",
+    "confidence": 1-10 (confidence level),
+    "justification": "1-2 sentence explanation",
     "risk_level": "low" | "medium" | "high"
-}'''
+} '''
     
     def analyze(self, market_data, investment_status, selected_coin_info=None):
-        """AI를 통한 매매 분석"""
+        """Performs trade analysis using AI, with robust error handling."""
         if not self.client:
-            print("OpenAI API 키가 없어 AI 분석을 건너뜁니다.")
+            print("Skipping AI analysis because OpenAI API key is missing.")
             return None
         
         try:
-            # AI에게 제공할 데이터 구성
-            analysis_data = {
-                "market_data": market_data,
-                "investment_status": investment_status,
-                "selected_coin": selected_coin_info
-            }
-            
-            # 뉴스 헤드라인 추출 및 정리
-            news_headlines = self._extract_news_headlines(market_data)
-            if news_headlines:
-                analysis_data["news_headlines"] = news_headlines
+            analysis_data = self._prepare_analysis_data(market_data, investment_status, selected_coin_info)
             
             response = self.client.chat.completions.create(
                 model="gpt-4-turbo",
                 messages=[
                     {"role": "system", "content": self.system_prompt},
-                    {
-                        "role": "user", 
-                        "content": f"다음 데이터를 분석하여 JSON 형식으로 매매 추천을 해주세요: {json.dumps(analysis_data, ensure_ascii=False)}"
-                    }
+                    {"role": "user", "content": f"Analyze the following data and provide a trading recommendation in JSON format: {json.dumps(analysis_data, ensure_ascii=False)}"}
                 ],
                 response_format={"type": "json_object"},
                 temperature=0.7,
@@ -83,86 +69,89 @@ class AIAnalyzer:
             result = json.loads(response.choices[0].message.content)
             return self._validate_response(result)
             
+        except (APIError, RateLimitError) as e:
+            print(f"OpenAI API error: {e}")
         except json.JSONDecodeError as e:
-            print(f"AI 응답 JSON 파싱 오류: {e}")
-            return None
+            print(f"Error parsing AI response JSON: {e}")
         except Exception as e:
-            print(f"AI 분석 오류: {e}")
-            return None
+            print(f"An unexpected error occurred during AI analysis: {e}")
+        return None
     
+    def _prepare_analysis_data(self, market_data, investment_status, selected_coin_info):
+        """Prepares the data payload for the AI analysis."""
+        analysis_data = {
+            "market_data": market_data,
+            "investment_status": investment_status,
+            "selected_coin": selected_coin_info
+        }
+        news_headlines = self._extract_news_headlines(market_data)
+        if news_headlines:
+            analysis_data["news_headlines"] = news_headlines
+        return analysis_data
+
     def _extract_news_headlines(self, market_data):
-        """뉴스 데이터에서 헤드라인 추출"""
+        """Extracts and formats news headlines from market data."""
         try:
             news_analysis = market_data.get('news_analysis')
             if not news_analysis or not news_analysis.get('news_items'):
                 return None
             
-            headlines = []
-            for news_item in news_analysis['news_items'][:10]:  # 상위 10개만
-                headline_info = {
-                    "title": news_item.get('title', ''),
-                    "source": news_item.get('source', ''),
-                    "sentiment": news_item.get('sentiment', 'neutral'),
-                    "sentiment_score": news_item.get('sentiment_score', 0)
+            headlines = [
+                {
+                    "title": item.get('title', ''),
+                    "source": item.get('source', ''),
+                    "sentiment": item.get('sentiment', 'neutral'),
+                    "sentiment_score": item.get('sentiment_score', 0)
                 }
-                if headline_info["title"]:
-                    headlines.append(headline_info)
+                for item in news_analysis['news_items'][:10] if item.get('title')
+            ]
             
             return {
                 "headlines": headlines,
                 "overall_sentiment": news_analysis.get('weighted_sentiment', 0),
                 "market_signal": news_analysis.get('market_signal', {}),
-                "summary": f"{len(headlines)}개 뉴스 분석 - 긍정: {news_analysis.get('positive_count', 0)}개, 부정: {news_analysis.get('negative_count', 0)}개"
+                "summary": f"{len(headlines)} news items analyzed - Positive: {news_analysis.get('positive_count', 0)}, Negative: {news_analysis.get('negative_count', 0)}"
             }
-            
         except Exception as e:
-            print(f"뉴스 헤드라인 추출 오류: {e}")
+            print(f"Error extracting news headlines: {e}")
             return None
     
     def _validate_response(self, response):
-        """AI 응답 유효성 검사"""
+        """Validates the structure and values of the AI's response."""
         try:
-            # 필수 필드 확인
             required_fields = ["recommendation", "confidence", "justification", "risk_level"]
-            for field in required_fields:
-                if field not in response:
-                    print(f"AI 응답에 '{field}' 필드가 없습니다.")
-                    return None
+            if not all(field in response for field in required_fields):
+                missing = [field for field in required_fields if field not in response]
+                print(f"AI response is missing required fields: {missing}")
+                return None
             
-            # 값 유효성 검사
             if response["recommendation"] not in ["buy", "sell", "hold"]:
-                print(f"잘못된 추천 값: {response['recommendation']}")
+                print(f"Invalid recommendation value: {response['recommendation']}")
                 return None
             
             if not isinstance(response["confidence"], (int, float)) or not (1 <= response["confidence"] <= 10):
-                print(f"잘못된 신뢰도 값: {response['confidence']}")
+                print(f"Invalid confidence value: {response['confidence']}")
                 return None
             
             if response["risk_level"] not in ["low", "medium", "high"]:
-                print(f"잘못된 리스크 레벨: {response['risk_level']}")
+                print(f"Invalid risk level: {response['risk_level']}")
                 return None
             
-            # 선택적 필드 기본값 설정
-            if "news_impact" not in response:
-                response["news_impact"] = "none"
-            if "key_factors" not in response:
-                response["key_factors"] = []
+            response.setdefault("news_impact", "none")
+            response.setdefault("key_factors", [])
             
             return response
-            
-        except Exception as e:
-            print(f"AI 응답 검증 오류: {e}")
+        except (TypeError, KeyError) as e:
+            print(f"Error validating AI response structure: {e}")
             return None
     
     def get_recommendation(self, market_data, investment_status, selected_coin_info=None):
-        """매매 추천 조회 (AI 또는 백업 분석)"""
-        # AI 분석 시도
+        """Gets a trading recommendation, falling back to technical analysis on AI failure."""
         ai_result = self.analyze(market_data, investment_status, selected_coin_info)
         if ai_result:
             return ai_result
         
-        # AI 실패 시 백업 분석 사용  
-        print("AI 분석 실패로 기본 분석을 사용합니다.")
+        print("AI analysis failed. Falling back to technical analysis.")
         from analysis.technical_analyzer import TechnicalAnalyzer
         
         tech_analyzer = TechnicalAnalyzer()

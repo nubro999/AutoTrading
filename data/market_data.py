@@ -1,23 +1,42 @@
 # data/market_data.py
 import pyupbit
+import time
 from config.settings import TradingConfig
 from data.fear_greed import FearGreedAnalyzer
 from data.news_analyzer import NewsAnalyzer
 
 class MarketDataCollector:
-    """시장 데이터 수집 클래스"""
+    """A class for collecting market data, with caching for current price."""
     
     def __init__(self, target_coin=None):
         self.target_coin = target_coin or TradingConfig.TARGET_COIN
         self.daily_count = TradingConfig.DAILY_CANDLE_COUNT
         self.hourly_count = TradingConfig.HOURLY_CANDLE_COUNT
         self.fng_analyzer = FearGreedAnalyzer()
+        self.news_analyzer = NewsAnalyzer(TradingConfig.SERPAPI_KEY) if TradingConfig.NEWS_ANALYSIS_ENABLED else None
         
-        # 뉴스 분석기 (SerpAPI 키가 있을 때만 초기화)
-        if TradingConfig.NEWS_ANALYSIS_ENABLED:
-            self.news_analyzer = NewsAnalyzer(TradingConfig.SERPAPI_KEY)
-        else:
-            self.news_analyzer = None
+        # Cache for current price to avoid redundant API calls
+        self._price_cache = {"price": None, "timestamp": 0}
+
+    def get_current_price(self, coin_symbol=None, force_refresh=False):
+        """Retrieves the current price, using a cache to avoid redundant API calls."""
+        target = coin_symbol or self.target_coin
+        
+        # Check cache first
+        cache_is_valid = (time.time() - self._price_cache["timestamp"]) < 5 # 5-second cache
+        if not force_refresh and self._price_cache["price"] is not None and cache_is_valid:
+            return self._price_cache["price"]
+
+        try:
+            current_price = pyupbit.get_current_price(target)
+            if current_price:
+                # Update cache
+                self._price_cache["price"] = current_price
+                self._price_cache["timestamp"] = time.time()
+            return current_price
+        except Exception as e:
+            print(f"Error fetching current price: {e}")
+            return self._price_cache["price"] # Return cached price on error if available
     
     def get_ohlcv_data(self, coin_symbol=None):
         """OHLCV 데이터 수집"""

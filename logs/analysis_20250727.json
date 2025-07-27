@@ -1,0 +1,205 @@
+[
+  {
+    "timestamp": "2025-07-27T16:22:58.532216",
+    "current_price": null,
+    "total_asset": 99963.50834087,
+    "recommendation": {
+      "market_analysis": {
+        "overall_sentiment": "neutral",
+        "fear_greed_interpretation": "Neutral due to lack of data",
+        "news_impact": "Analysis unavailable",
+        "trend_direction": "sideways"
+      },
+      "selected_coin": {
+        "symbol": "KRW-BTC",
+        "name": "Bitcoin",
+        "selection_reason": "Default to safe coin due to AI analysis failure"
+      },
+      "recommendation": {
+        "action": "hold",
+        "confidence": 3,
+        "justification": "Conservative hold recommended due to analysis failure",
+        "risk_level": "high"
+      },
+      "analysis_details": {
+        "technical_signals": "Unavailable",
+        "news_influence": "Unavailable",
+        "market_timing": "Uncertain",
+        "key_factors": [
+          "AI analysis failed",
+          "Conservative approach",
+          "Risk aversion"
+        ]
+      },
+      "risk_management": {
+        "position_size": 0.1,
+        "stop_loss": 10,
+        "take_profit": 15
+      }
+    },
+    "fear_greed_index": null
+  },
+  {
+    "timestamp": "2025-07-27T16:23:33.651432",
+    "current_price": null,
+    "total_asset": 99965.49754087,
+    "recommendation": {
+      "market_analysis": {
+        "overall_sentiment": "neutral",
+        "fear_greed_interpretation": "Neutral due to lack of data",
+        "news_impact": "Analysis unavailable",
+        "trend_direction": "sideways"
+      },
+      "selected_coin": {
+        "symbol": "KRW-BTC",
+        "name": "Bitcoin",
+        "selection_reason": "Default to safe coin due to AI analysis failure"
+      },
+      "recommendation": {
+        "action": "hold",
+        "confidence": 3,
+        "justification": "Conservative hold recommended due to analysis failure",
+        "risk_level": "high"
+      },
+      "analysis_details": {
+        "technical_signals": "Unavailable",
+        "news_influence": "Unavailable",
+        "market_timing": "Uncertain",
+        "key_factors": [
+          "AI analysis failed",
+          "Conservative approach",
+          "Risk aversion"
+        ]
+      },
+      "risk_management": {
+        "position_size": 0.1,
+        "stop_loss": 10,
+        "take_profit": 15
+      }
+    },
+    "fear_greed_index": null
+  },
+  {
+    "timestamp": "2025-07-27T16:26:48.842150",
+    "current_price": null,
+    "total_asset": 99959.33102087,
+    "recommendation": {
+      "market_analysis": {
+        "overall_sentiment": "neutral",
+        "fear_greed_interpretation": "No current data on Fear & Greed Index provided; assuming a neutral market sentiment based on mixed price changes and volatility in the coin data.",
+        "news_impact": "No specific news data provided; unable to assess the direct impact of current events on market sentiment.",
+        "trend_direction": "sideways"
+      },
+      "selected_coin": {
+        "symbol": "KRW-ETH",
+        "name": "Ethereum",
+        "selection_reason": "Among the analyzed coins, Ethereum (KRW-ETH) shows a strong performance with a high performance score of 42.9, combined with recent positive price changes both on a daily and weekly basis. Additionally, it maintains moderate volatility compared to other coins, suggesting less risk relative to potential gains."
+      },
+      "recommendation": {
+        "action": "buy",
+        "confidence": 8,
+        "justification": "Ethereum's recent positive price trajectory and moderate volatility make it a compelling buy opportunity. The investment is supported by Ethereum’s strong market position and relatively stable performance metrics. The decision to buy aligns with maintaining a diversified portfolio while increasing potential returns.",
+        "risk_level": "medium"
+      },
+      "analysis_details": {
+        "technical_signals": "Positive price changes both on 1-day (1.08%) and 7-day (0.74%) scales, moderate volatility (2.46), substantial market activity with volume close to average.",
+        "news_influence": "No specific news analysis, assuming neutral impact.",
+        "market_timing": "Optimal for buying considering recent stability and growth tendencies.",
+        "key_factors": [
+          "Positive short-term price change",
+          "Stability in performance score",
+          "Moderate volatility",
+          "Strong market position"
+        ]
+      },
+      "risk_management": {
+        "position_size": 0.5,
+        "stop_loss": 10,
+        "take_profit": 20
+      }
+    },
+    "fear_greed_index": null
+  },
+  {
+    "timestamp": "2025-07-27T16:27:30.908397",
+    "current_price": null,
+    "total_asset": 99956.14830087,
+    "recommendation": {
+      "market_analysis": {
+        "overall_sentiment": "neutral",
+        "fear_greed_interpretation": "Without explicit Fear & Greed Index data, assumed neutral based on mixed price changes across various coins.",
+        "news_impact": "No specific news provided; assumed neutral impact.",
+        "trend_direction": "sideways"
+      },
+      "selected_coin": {
+        "symbol": "KRW-ETH",
+        "name": "Ethereum",
+        "selection_reason": "Ethereum (ETH) has the highest performance score of 43.01 among the evaluated coins. It shows a stable positive price change over the last 7 days and has a moderate volatility of 2.46, indicating less price fluctuation compared to other coins."
+      },
+      "recommendation": {
+        "action": "buy",
+        "confidence": 8,
+        "justification": "ETH has shown consistent growth over the past week and maintains a reasonable volatility level. The investment in ETH is likely to be less risky while still offering potential gains given its current upward trend and strong performance score.",
+        "risk_level": "medium"
+      },
+      "analysis_details": {
+        "technical_signals": "Positive 7-day price change, moderate volatility, highest performance score among peers.",
+        "news_influence": "Assumed neutral in absence of explicit news.",
+        "market_timing": "Good entry point as ETH shows a stable upward trend.",
+        "key_factors": [
+          "Performance score",
+          "Recent price stability",
+          "Moderate volatility",
+          "Positive short-term trend"
+        ]
+      },
+      "risk_management": {
+        "position_size": "0.5",
+        "stop_loss": "10",
+        "take_profit": "20"
+      }
+    },
+    "fear_greed_index": null
+  },
+  {
+    "timestamp": "2025-07-27T16:29:27.574602",
+    "current_price": null,
+    "total_asset": 99960.12670087,
+    "recommendation": {
+      "market_analysis": {
+        "overall_sentiment": "neutral",
+        "fear_greed_interpretation": "Market appears cautiously optimistic without strong directional bias.",
+        "news_impact": "No specific news impact stated, neutral influence assumed.",
+        "trend_direction": "sideways"
+      },
+      "selected_coin": {
+        "symbol": "KRW-ETH",
+        "name": "Ethereum",
+        "selection_reason": "Ethereum (ETH) exhibits a robust performance with a stable positive price change over the past week and day, coupled with a moderate volatility and the highest performance score among the listed coins."
+      },
+      "recommendation": {
+        "action": "buy",
+        "confidence": 7,
+        "justification": "Ethereum shows a consistent upward trend and moderate volatility, suggesting it could be a safer investment compared to others. The performance score is the highest, indicating strong current performance metrics.",
+        "risk_level": "medium"
+      },
+      "analysis_details": {
+        "technical_signals": "Positive 1-day and 7-day price changes with moderate volatility and volume, and a top performance score.",
+        "news_influence": "No specific news, the decision is mostly based on technical and performance metrics.",
+        "market_timing": "Current market conditions are neutral; thus, it’s a good time for balanced portfolio adjustments.",
+        "key_factors": [
+          "Performance score",
+          "Price stability",
+          "Volume",
+          "Moderate volatility"
+        ]
+      },
+      "risk_management": {
+        "position_size": "0.5",
+        "stop_loss": "20",
+        "take_profit": "30"
+      }
+    },
+    "fear_greed_index": null
+  }
+]

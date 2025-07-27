@@ -61,6 +61,57 @@ class PortfolioManager:
         except Exception as e:
             print(f"투자 상태 조회 오류: {e}")
             return None
+
+    def get_comprehensive_investment_status(self):
+        """모든 지원되는 코인에 대한 종합적인 투자 상태를 조회합니다."""
+        try:
+            balances = self.upbit.get_balances()
+            krw_balance = 0
+            total_coin_value = 0
+            all_coins_status = []
+
+            # Find KRW balance first
+            for balance in balances:
+                if balance['currency'] == 'KRW':
+                    krw_balance = float(balance['balance'])
+                    break
+
+            for coin_symbol in TradingConfig.SUPPORTED_COINS:
+                coin_currency = coin_symbol.replace('KRW-', '')
+                coin_balance = 0
+                avg_buy_price = 0
+                
+                for balance in balances:
+                    if balance['currency'] == coin_currency:
+                        coin_balance = float(balance['balance'])
+                        avg_buy_price = float(balance.get('avg_buy_price', 0))
+                        break
+
+                if coin_balance > 0:
+                    current_price = pyupbit.get_current_price(coin_symbol)
+                    if current_price:
+                        coin_value = coin_balance * current_price
+                        total_coin_value += coin_value
+                        all_coins_status.append({
+                            "symbol": coin_symbol,
+                            "balance": coin_balance,
+                            "avg_buy_price": avg_buy_price,
+                            "current_price": current_price,
+                            "value": coin_value
+                        })
+
+            total_asset = krw_balance + total_coin_value
+            
+            return {
+                "krw_balance": krw_balance,
+                "total_coin_value": total_coin_value,
+                "total_asset": total_asset,
+                "held_coins": all_coins_status
+            }
+
+        except Exception as e:
+            print(f"종합 투자 상태 조회 오류: {e}")
+            return None
     
     def get_profit_loss(self, coin_symbol=None):
         """수익률 계산"""

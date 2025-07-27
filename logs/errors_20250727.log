@@ -1,0 +1,41 @@
+[2025-07-27 15:48:42] 투자 상태 조회 실패
+[2025-07-27 15:49:10] 투자 상태 조회 실패
+[2025-07-27 15:59:30] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f916' in position 0: illegal multibyte sequence
+[2025-07-27 16:00:00] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f916' in position 0: illegal multibyte sequence
+[2025-07-27 16:00:30] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f916' in position 0: illegal multibyte sequence
+[2025-07-27 16:02:01] Error in AI full auto cycle: 'CoinAnalyzer' object has no attribute 'print_market_summary'
+[2025-07-27 16:02:31] Error in AI full auto cycle: 'CoinAnalyzer' object has no attribute 'print_market_summary'
+[2025-07-27 16:03:51] Error in AI full auto cycle: 'CoinAnalyzer' object has no attribute 'print_market_summary'
+[2025-07-27 16:04:21] Error in AI full auto cycle: 'CoinAnalyzer' object has no attribute 'print_market_summary'
+[2025-07-27 16:08:09] Failed to get comprehensive investment status.
+[2025-07-27 16:12:10] Failed to get comprehensive investment status.
+[2025-07-27 16:18:35] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f916' in position 0: illegal multibyte sequence
+[2025-07-27 16:19:46] Error in AI full auto cycle: Invalid format specifier ', .0f' for object of type 'float'
+[2025-07-27 16:20:17] Error in AI full auto cycle: Invalid format specifier ', .0f' for object of type 'float'
+[2025-07-27 16:21:13] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:21:30] Error in AI full auto cycle: 'coins_data'
+[2025-07-27 16:22:38] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:30:39] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:31:11] Failed to get comprehensive investment status.
+[2025-07-27 16:31:42] Failed to get comprehensive investment status.
+[2025-07-27 16:33:10] Failed to get comprehensive investment status.
+[2025-07-27 16:36:19] Error in AI full auto cycle: Invalid format specifier ', .0f' for object of type 'float'
+[2025-07-27 16:38:14] Error in AI full auto cycle: Invalid format specifier ', .0f' for object of type 'float'
+[2025-07-27 16:39:15] Error in AI full auto cycle: 'current_price'
+[2025-07-27 16:39:43] Error in AI full auto cycle: 'current_price'
+[2025-07-27 16:41:13] Error in AI full auto cycle: Invalid format specifier ', .0f' for object of type 'float'
+[2025-07-27 16:42:14] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:42:30] Failed to get comprehensive investment status.
+[2025-07-27 16:43:17] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:46:34] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f916' in position 0: illegal multibyte sequence
+[2025-07-27 16:46:52] Error in AI full auto cycle: 'coins_data'
+[2025-07-27 16:48:02] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f916' in position 0: illegal multibyte sequence
+[2025-07-27 16:48:34] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:48:52] Error in AI full auto cycle: Invalid format specifier ', .0f' for object of type 'float'
+[2025-07-27 16:49:41] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:49:58] Failed to get comprehensive investment status.
+[2025-07-27 16:50:30] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:50:59] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:51:25] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:51:35] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence
+[2025-07-27 16:52:19] Error in AI full auto cycle: 'cp949' codec can't encode character '\U0001f50d' in position 0: illegal multibyte sequence

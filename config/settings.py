@@ -14,20 +14,22 @@ class TradingConfig:
     SERPAPI_KEY = os.getenv("SERPAPI_KEY")  # 뉴스 분석용
     
     # 거래 설정
-    TARGET_COIN = "AUTO"  # "AUTO"로 설정하면 자동 선택, 특정 코인 지정도 가능
+    TARGET_COIN = "AI_AUTO"  # AI가 자동으로 선택
     MIN_TRADE_AMOUNT = 5000  # 최소 거래 금액 (원)
     MIN_CONFIDENCE = 6  # 최소 신뢰도
     
-    # 자동 코인 선택 설정
-    AUTO_SELECTION_ENABLED = True  # 자동 코인 선택 활성화
-    COIN_ANALYSIS_INTERVAL = 3600  # 코인 재분석 주기 (초, 1시간)
+    # AI 완전 자동화 설정
+    AI_FULL_AUTO_MODE = True  # AI 완전 자동화 모드 활성화
+    AUTO_SELECTION_ENABLED = True  # AI가 자동으로 코인 선택
     SUPPORTED_COINS = [
         "KRW-BTC", "KRW-ETH", "KRW-XRP", "KRW-ADA", "KRW-SOL",
-        "KRW-DOGE", "KRW-AVAX", "KRW-DOT", "KRW-MATIC", "KRW-LINK"
+        "KRW-DOGE", "KRW-AVAX", "KRW-DOT", "KRW-MATIC", "KRW-LINK",
+        "KRW-UNI", "KRW-LTC", "KRW-BCH", "KRW-ATOM", "KRW-NEAR"
     ]
     
     # 거래 비율 설정
     TRADE_RATIOS = {
+        
         "high": 0.1,    # 고위험: 10%
         "medium": 0.2,  # 중위험: 20% 
         "low": 0.3      # 저위험: 30%
