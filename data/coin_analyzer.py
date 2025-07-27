@@ -13,7 +13,7 @@ class CoinAnalyzer:
 
     def get_comprehensive_coin_data(self):
         """Collects and analyzes data for all supported coins in parallel."""
-        print(f"🔍 Analyzing {len(self.supported_coins)} coins...")
+        print(f"Analyzing {len(self.supported_coins)} coins...")
         analyzed_coins = {}
         with ThreadPoolExecutor(max_workers=10) as executor:
             future_to_coin = {executor.submit(self.analyze_coin, coin): coin for coin in self.supported_coins}
@@ -93,7 +93,7 @@ class CoinAnalyzer:
 
     def select_optimal_coin(self):
         """Selects the best coin to trade based on performance and news trends."""
-        print("🔍 Selecting optimal coin...")
+        print("Selecting optimal coin...")
         performance_analysis = self.get_comprehensive_coin_data()
         if not performance_analysis:
             return {'selected_coin': 'KRW-BTC', 'reason': 'Performance analysis failed.'}
