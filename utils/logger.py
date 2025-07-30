@@ -67,6 +67,30 @@ class TradingLogger:
                 
         except Exception as e:
             print(f"에러 로그 기록 실패: {e}")
+
+    def log_debug(self, debug_message):
+        """디버그 로그 기록"""
+        try:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            debug_log = f"[{timestamp}] [DEBUG] {debug_message}\n"
+            
+            with open(self.error_log_file, "a", encoding="utf-8") as f:
+                f.write(debug_log)
+                
+        except Exception as e:
+            print(f"디버그 로그 기록 실패: {e}")
+
+    def log_warning(self, warning_message):
+        """경고 로그 기록"""
+        try:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            warning_log = f"[{timestamp}] [WARNING] {warning_message}\n"
+            
+            with open(self.error_log_file, "a", encoding="utf-8") as f:
+                f.write(warning_log)
+                
+        except Exception as e:
+            print(f"경고 로그 기록 실패: {e}")
     
     def _append_json_log(self, file_path, log_data):
         """JSON 로그 파일에 데이터 추가"""

@@ -15,9 +15,19 @@ class TradeExecutor:
     def execute_trade(self, recommendation, investment_status):
         """매매 실행"""
         try:
-            action = recommendation.get("recommendation")
+            # 추천 데이터 검증
+            if not recommendation or not isinstance(recommendation, dict):
+                print("❌ No valid recommendation data")
+                return False
+                
+            action = recommendation.get("recommendation") or recommendation.get("action")
             confidence = recommendation.get("confidence", 0)
             risk_level = recommendation.get("risk_level", "high")
+            
+            # 액션 검증
+            if action is None:
+                print("❌ No action specified in recommendation")
+                return False
             
             # 신뢰도 검사
             if confidence < self.min_confidence:
@@ -51,7 +61,8 @@ class TradeExecutor:
             
             # 매수 가능 여부 확인
             if not self.portfolio.can_buy(buy_amount):
-                print(f"매수 불가 - 잔액: {krw_balance:,.0f}원, 시도금액: {buy_amount:,.0f}원")
+                print(f"❌ Buy failed - Balance: {krw_balance:,.0f} KRW, Trying: {buy_amount:,.0f} KRW")
+                print(f"   Reason: Insufficient funds or minimum order not met")
                 return False
             
             print(f"매수 실행: {buy_amount:,.0f}원 (보유현금의 {trade_ratio*100:.0f}%)")

@@ -66,11 +66,15 @@ class MarketDataCollector:
             print(f"OHLCV 데이터 수집 오류: {e}")
             return None
     
-    def get_current_price(self, coin_symbol=None):
-        """현재 가격 조회"""
+    def get_current_price_fallback(self, coin_symbol=None):
+        """현재 가격 조회 (fallback method)"""
         try:
             target = coin_symbol or self.target_coin
-            return pyupbit.get_current_price(target)
+            price = pyupbit.get_current_price(target)
+            if price is None or price == 0:
+                time.sleep(1)
+                price = pyupbit.get_current_price(target)
+            return price
         except Exception as e:
             print(f"현재 가격 조회 오류: {e}")
             return None

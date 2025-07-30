@@ -22,7 +22,7 @@ class BaseTrader:
         )
         self.logger = TradingLogger()
 
-    def run_continuous(self):
+    def run_continuous(self): #여기서 실행!
         """Runs the trading bot in a continuous loop."""
         mode = "AI Full Auto" if isinstance(self, AIFullAutoTrader) else "Single Coin"
         print(f"Starting Auto-Trading in {mode} mode.")
@@ -66,7 +66,7 @@ class AIFullAutoTrader(BaseTrader):
         self.coin_analyzer = CoinAnalyzer(TradingConfig.SERPAPI_KEY)
         self.ai_master = AIMasterAnalyzer()
 
-    def run_single_cycle(self):
+    def run_single_cycle(self): #이곳에서 실행!
         """Executes a single full-auto AI trading cycle."""
         try:
             self.logger.print_session_header()
@@ -83,6 +83,7 @@ class AIFullAutoTrader(BaseTrader):
             investment_status = self._get_comprehensive_investment_status(portfolio_manager)
             if not investment_status:
                 self.logger.log_error("Failed to get comprehensive investment status.")
+                self.logger.log_debug("Investment status was None or empty.")
                 return False
             self._print_investment_summary(investment_status)
 
@@ -140,7 +141,7 @@ class AIFullAutoTrader(BaseTrader):
         print("="*50)
         print(f"KRW Balance: {investment_status['krw_balance']:.0f} KRW")
         print(f"Total Coin Value: {investment_status['total_coin_value']:.0f} KRW")
-        print(f"Total Assets: {investment_status['total_asset']:.0f} KRW")
+        #print(f"Total Assets: {investment_status['total_asset']:.0f} KRW")
 
 
     def _print_ai_decision(self, ai_decision):
