@@ -6,7 +6,7 @@ import './App.css';
 // Use relative URL for production (nginx will proxy) or environment variable
 const API_BASE = process.env.NODE_ENV === 'production' 
   ? '/api'  // nginx will proxy /api to backend
-  : process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+  : process.env.REACT_APP_API_URL || '/api';
 
 function App() {
   const [trades, setTrades] = useState([]);
