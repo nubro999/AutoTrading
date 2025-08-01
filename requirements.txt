@@ -1,4 +1,5 @@
 pyupbit==0.2.31
+httpx==0.27.2
 openai==1.54.4
 python-dotenv==1.0.0
 requests==2.31.0
