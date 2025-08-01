@@ -7,7 +7,7 @@ class AIMasterAnalyzer:
     """AI master analyzer for making comprehensive trading decisions."""
     
     def __init__(self):
-        self.client = OpenAI() if TradingConfig.OPENAI_API_KEY else None
+        self.client = OpenAI(http_client=None) if TradingConfig.OPENAI_API_KEY else None
         self.system_prompt = self._get_master_system_prompt()
     
     def _get_master_system_prompt(self):

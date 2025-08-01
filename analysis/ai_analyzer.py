@@ -6,7 +6,7 @@ class AIAnalyzer:
     """AI analysis class with improved error handling."""
     
     def __init__(self):
-        self.client = OpenAI() if TradingConfig.OPENAI_API_KEY else None
+        self.client = OpenAI(http_client=None) if TradingConfig.OPENAI_API_KEY else None
         self.system_prompt = self._get_system_prompt()
     
     def _get_system_prompt(self):
