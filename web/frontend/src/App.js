@@ -3,7 +3,10 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { TrendingUp, DollarSign, Activity, Target } from 'lucide-react';
 import './App.css';
 
-const API_BASE = 'http://localhost:8001/api';
+// Use relative URL for production (nginx will proxy) or environment variable
+const API_BASE = process.env.NODE_ENV === 'production' 
+  ? '/api'  // nginx will proxy /api to backend
+  : process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
 
 function App() {
   const [trades, setTrades] = useState([]);
