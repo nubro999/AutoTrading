@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  autotrading:
+    build: .
+    container_name: autotrading-bot
+    restart: unless-stopped
+    environment:
+      - UPBIT_ACCESS_KEY=${UPBIT_ACCESS_KEY}
+      - UPBIT_SECRET_KEY=${UPBIT_SECRET_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SERPAPI_KEY=${SERPAPI_KEY}
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
+    networks:
+      - trading-network
+
+networks:
+  trading-network:
+    driver: bridge

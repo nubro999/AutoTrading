@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  autotrading-bot:
+    build: .
+    container_name: autotrading-bot
+    restart: unless-stopped
+    environment:
+      - UPBIT_ACCESS_KEY=${UPBIT_ACCESS_KEY}
+      - UPBIT_SECRET_KEY=${UPBIT_SECRET_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SERPAPI_KEY=${SERPAPI_KEY}
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
+    networks:
+      - trading-network
+
+  api-server:
+    build:
+      context: ./web/backend
+      dockerfile: Dockerfile
+    container_name: autotrading-api
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./logs:/app/logs:ro
+    depends_on:
+      - autotrading-bot
+    networks:
+      - trading-network
+
+  web-dashboard:
+    build:
+      context: ./web/frontend
+      dockerfile: Dockerfile
+    container_name: autotrading-web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-server
+    networks:
+      - trading-network
+
+networks:
+  trading-network:
+    driver: bridge
