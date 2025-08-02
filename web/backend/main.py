@@ -41,7 +41,7 @@ manager = ConnectionManager()
 
 def get_log_files(log_type: str, days: int = 30) -> List[str]:
     """Get log files for the specified number of days"""
-    log_dir = Path("../logs")
+    log_dir = Path("../../logs")
     if not log_dir.exists():
         return []
     
