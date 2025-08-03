@@ -40,21 +40,93 @@ class TradingLogger:
         except Exception as e:
             self.log_error(f"거래 로그 기록 실패: {e}")
     
+    def _clean_unicode_text(self, obj):
+        """Remove problematic Unicode characters recursively from data structures"""
+        if isinstance(obj, str):
+            # Remove emojis and other problematic Unicode characters
+            return obj.encode('ascii', errors='ignore').decode('ascii')
+        elif isinstance(obj, dict):
+            cleaned_dict = {}
+            for k, v in obj.items():
+                # Clean both key and value
+                clean_key = self._clean_unicode_text(k) if isinstance(k, str) else k
+                clean_value = self._clean_unicode_text(v)
+                cleaned_dict[clean_key] = clean_value
+            return cleaned_dict
+        elif isinstance(obj, list):
+            return [self._clean_unicode_text(item) for item in obj]
+        elif isinstance(obj, (int, float, bool, type(None))):
+            return obj
+        else:
+            # For other types, convert to string then clean
+            return self._clean_unicode_text(str(obj))
+
     def log_analysis(self, market_data, investment_status, recommendation):
         """분석 로그 기록"""
         try:
+            # Initialize variables
+            current_price = None
+            fear_greed_value = None
+            total_asset = None
+            
+            
+            # Handle different data structures for AI Full Auto vs Single Coin mode
+            if isinstance(market_data, dict):
+                # For AI Full Auto mode (comprehensive_data)
+                if "market_context" in market_data:
+                    # Extract current price from coins_data (use BTC as reference)
+                    # Extract current price from coins_data (use BTC as reference)
+                    coins_data = market_data.get("coins_data", [])
+                    btc_data = next((coin for coin in coins_data if isinstance(coin, dict) and coin.get("symbol") == "KRW-BTC"), None)
+                    if btc_data:
+                        current_price = btc_data.get("current_price")
+                    else:
+                        # Use first valid coin if BTC not found
+                        first_coin = next((coin for coin in coins_data if isinstance(coin, dict)), None)
+                        if first_coin:
+                            current_price = first_coin.get("current_price")
+                    
+                    # Extract fear greed from market_context
+                    market_context = market_data.get("market_context", {})
+                    fng_data = market_context.get("fear_greed_index", {})
+                    fear_greed_value = fng_data.get("current_value") if isinstance(fng_data, dict) else None
+                
+                # For Single Coin mode (market_data)
+                else:
+                    current_price = market_data.get("current_price")
+                    fng_data = market_data.get("fear_greed_index", {})
+                    fear_greed_value = fng_data.get("current_value") if isinstance(fng_data, dict) else None
+            
+            # Calculate total asset from investment status
+            if isinstance(investment_status, dict):
+                krw_balance = investment_status.get("krw_balance", 0)
+                total_coin_value = investment_status.get("total_coin_value", 0)
+                total_asset = krw_balance + total_coin_value
+            
             analysis_log = {
                 "timestamp": datetime.now().isoformat(),
-                "current_price": market_data.get("current_price"),
-                "total_asset": investment_status.get("total_asset"),
+                "current_price": current_price,
+                "total_asset": total_asset,
                 "recommendation": recommendation,
-                "fear_greed_index": market_data.get("fear_greed_index", {}).get("current_value") if market_data.get("fear_greed_index") else None
+                "fear_greed_index": fear_greed_value
             }
             
             self._append_json_log(self.analysis_log_file, analysis_log)
             
         except Exception as e:
             self.log_error(f"분석 로그 기록 실패: {e}")
+            # Try to log without Unicode cleaning
+            try:
+                minimal_log = {
+                    "timestamp": datetime.now().isoformat(),
+                    "current_price": current_price,
+                    "total_asset": total_asset,
+                    "recommendation": {"action": "hold", "confidence": 5, "justification": "Simplified logging due to error"},
+                    "fear_greed_index": fear_greed_value
+                }
+                self._append_json_log(self.analysis_log_file, minimal_log)
+            except Exception as e2:
+                print(f"Minimal logging also failed: {e2}")
     
     def log_error(self, error_message):
         """에러 로그 기록"""
@@ -107,7 +179,7 @@ class TradingLogger:
             
             # 파일에 저장
             with open(file_path, "w", encoding="utf-8") as f:
-                json.dump(logs, f, ensure_ascii=False, indent=2)
+                json.dump(logs, f, ensure_ascii=True, indent=2)
                 
         except Exception as e:
             print(f"JSON 로그 저장 실패: {e}")

@@ -30,7 +30,7 @@ class PortfolioManager:
             try:
                 coin_balance = self.upbit.get_balance(coin_currency) or 0
             except Exception as balance_error:
-                print(f"⚠️  Balance error for {coin_currency}: {balance_error}")
+                print(f"[WARNING] Balance error for {coin_currency}: {balance_error}")
                 coin_balance = 0
             
             # 현재 코인 가격
@@ -39,7 +39,7 @@ class PortfolioManager:
                 if current_price is None:
                     current_price = 0
             except Exception as price_error:
-                print(f"⚠️  Price error for {target_coin}: {price_error}")
+                print(f"[WARNING] Price error for {target_coin}: {price_error}")
                 current_price = 0
             
             # 코인 평가금액
@@ -74,13 +74,13 @@ class PortfolioManager:
             return investment_status
             
         except Exception as e:
-            print(f"💥 Investment status error: {e}")
+            print(f"[ERROR] Investment status error: {e}")
             return None
     
     def _log_balances_summary(self, balances, target_coin):
         """잔고 요약을 컴팩트하게 출력"""
         try:
-            print(f"💰 Balance check for {target_coin}:")
+            print(f"[INFO] Balance check for {target_coin}:")
             
             # 보유 중인 코인들만 표시
             held_coins = []
@@ -104,7 +104,7 @@ class PortfolioManager:
                 print("   No coins held")
                 
         except Exception as e:
-            print(f"⚠️  Error showing balance summary: {e}")
+            print(f"[WARNING] Error showing balance summary: {e}")
 
     def get_comprehensive_investment_status(self):
         """모든 지원되는 코인에 대한 종합적인 투자 상태를 조회합니다."""

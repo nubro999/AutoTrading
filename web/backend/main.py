@@ -41,7 +41,9 @@ manager = ConnectionManager()
 
 def get_log_files(log_type: str, days: int = 30) -> List[str]:
     """Get log files for the specified number of days"""
-    log_dir = Path("../../logs")
+    log_dir = Path("../../logs").resolve()
+    print(f"DEBUG: Looking for logs in: {log_dir}")
+    print(f"DEBUG: Log dir exists: {log_dir.exists()}")
     if not log_dir.exists():
         return []
     
@@ -91,7 +93,9 @@ async def get_trades(days: int = 7):
 async def get_analysis(days: int = 7):
     """Get analysis history"""
     analysis_files = get_log_files("analysis", days)
+    print(f"DEBUG: Found analysis files: {analysis_files}")
     analysis = load_json_logs(analysis_files)
+    print(f"DEBUG: Loaded {len(analysis)} analysis entries")
     
     return {
         "analysis": analysis,
@@ -103,7 +107,7 @@ async def get_analysis(days: int = 7):
                 "fear_greed": a.get('fear_greed_index'),
                 "recommendation": a.get('recommendation', {}).get('recommendation')
             }
-            for a in analysis if a.get('current_price')
+            for a in analysis
         ]
     }
 
@@ -182,6 +186,30 @@ async def websocket_endpoint(websocket: WebSocket):
             
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+@app.get("/api/debug")
+async def debug_logs():
+    """Debug log loading"""
+    from pathlib import Path
+    import os
+    log_dir = Path("../../logs").resolve()
+    
+    result = {
+        "cwd": str(Path.cwd()),
+        "log_dir": str(log_dir),
+        "exists": log_dir.exists(),
+        "files": [str(f) for f in log_dir.glob("*.json")] if log_dir.exists() else []
+    }
+    
+    if log_dir.exists():
+        analysis_files = get_log_files("analysis", 7)
+        result["analysis_files"] = analysis_files
+        if analysis_files:
+            analysis = load_json_logs(analysis_files)
+            result["analysis_count"] = len(analysis)
+            result["entries_with_asset"] = len([a for a in analysis if a.get('total_asset') is not None])
+    
+    return result
 
 if __name__ == "__main__":
     import uvicorn
